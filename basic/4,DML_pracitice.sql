@@ -28,6 +28,7 @@ UPDATE author set email='abc@naver.com', name='abc' WHERE id =4;
 delete from author where id=4;
 
 -- post에 글쓴적이 있는 author 데이터 1개 삭제 -> 에러 -> 조치후 삭제 (post에서 먼저 삭제후 author 삭제)
+-- 방법1
 delete from author where id=1;
 -- 오류
 delete from post where id=2;
@@ -35,7 +36,7 @@ delete from post where id=2;
 delete from author where id=1;
 -- 해결
 
--- 다른 방법
+-- 방법2
 delete from author where id=1;
 -- 오류
 UPDATE post set author_id = null where auhtor_id=2;

@@ -20,7 +20,24 @@ UPDATE author set email='hello@naver.com' WHERE id =2;
 
 -- DML - DELETE문
 -- WHERE절을 생략하면, 해당 테이블에 저장된 모든 데이터가 삭제
+-- DELETE, TRUCATE, DROP차이
+-- DROP은 테이블 구조까지 전체 삭제
+-- delete는 storage까지 삭제하지 않고 복구가 가능
+-- delete는 log를 남김
+-- delete의 삭제속도는 trucate보다 느림
 DELETE FROM 테이블이름;
 
 -- 예제
 delete from author where author_id=5;
+
+-- DML - SELECT문
+SELECT * FROM 테이블이름 [WHERE 조건];
+
+-- 모든 필드 선택
+SELECT * FROM author;
+
+-- 예제 
+select name from author;
+select * from author where id=1;
+select name, email from author where id=1;
+select * from author from where password=123;
