@@ -70,3 +70,45 @@ select name as 이름 from author;
 SELECT 필드이름 FROM 테이블이름 AS 별칭;
 -- 예제 
 select name, email from author as a;
+
+-- TINYINT UNSIGEN 컬럼 생성
+alter table author ADD column age tinyint unsigned; 
+
+-- DECIMAL 컬럼 생성
+alter table post ADD column price decimal(10, 3); 
+
+-- 다양한 타입의 바이너리 데이터를 저장할 수 있는 BOLB 컬럼 생성 및 데이터 입력, 확인 
+create table table_blob(id int, myimg longblob);
+INSERT INTO table_blob(id, myimg) values(2, LOAD_FILE('C:\\test_picture'));
+select HEX(myimg) from table_blob where id =1;
+
+-- 특정 데이터 값 지정
+alter table author modify column role ENUM('admin', 'user') not null default 'user';
+
+-- created_time 컬럼 생성 후 날짜와 시간를 지정
+alter table post add column created_time datetime(6) default current_timestamp(6);
+
+--비교연산자
+-- author 테이블의 id가 1,2,4는 아닌 데이터 조회(not in) 
+select * FROM author where id NOT IN(1,2,4);
+-- post 테이블의 id가 2~4까지의 데이터 조회
+-- between
+select * FROM post where id between 2 and 4;
+-- and
+select * from post where (id >=2 and id <=4);
+--or
+select * from post where NOT (id <2 or id > 4);
+
+-- 검색 패턴
+-- LIKE , NOT LIKE
+select * from author where name LIKE '홍%';
+select * from author where name LIKE '%동';
+select * from author where name LIKE '%길%';
+-- REGEXP
+SELECT * FROM author WHERE name REGEXP '[a-z]';
+SELECT * FROM author WHERE name REGEXP '[가-힣]';
+
+-- 타입변환
+SELECT CAST(20200101 AS DATE); => 2020-01-01
+SELECT CONVERT('2020-01-01', DATE); =>2020-01-01
+SELECT DATE_FORMAT('2020-01-01 17:12:00', '%Y-%m-%d'); =>2020-01-01
