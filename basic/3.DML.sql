@@ -6,7 +6,7 @@
 INSERT INTO 테이블이름(필드이름1, 필드이름2, 필드이름3,...) values(데이터값1, 데이터값2, 데이터값3,...);
 
 -- 예제
-INSERT  INTO author(id, name, email) values(1, 'kim', 'abc@naver.com');
+INSERT INTO author(id, name, email) values(1, 'kim', 'abc@naver.com');
 
 -- DML - UPDATE문
 -- 테이블의 레코드의 내용을 수정
@@ -62,10 +62,11 @@ select * from author order by id desc limit 2;
 
 -- allias(별칭)을 이용한 처리
 -- 테이블과 필드에 임시로 allias을 부여하고, 해당 allias을 SELECTE에서 사용 (as 생략 가능)
+
 SELECT 필드이름 AS 별칭 FROM 테이블명;
 -- 예제
+select name as 이름 from author;
 
 SELECT 필드이름 FROM 테이블이름 AS 별칭;
-
 -- 예제 
-select name as 이름, email from author as a;
+select name, email from author as a;

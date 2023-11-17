@@ -5,7 +5,7 @@ USE board;
 -- author 테이블 신규 생성
 -- 컬럼의
 -- primary key를 걸게되는 컬럼에 대해서는 unqie, not null 제약조건 부여
-CREATE TABLE author(id INT name VARCHAR(255),
+CREATE TABLE author(id INT, name VARCHAR(255),
  email VARCHAR(255), password VARCHAR(255), test1 VARCHAR(255), PRIMARY KEY (id));
 --  테이블 목록 조회
 SHOW TABLES;
@@ -16,7 +16,7 @@ DESCRIBE author;
 -- 만약 fkdp not null 조건이 있다면 auhtor_id가 없는 데이터는 post에 생성 불가
 -- author가 상제 될때 post에 대이터가 남아있으면 author 삭제 불가
 -- author의 id가 수정될때 post에 데이터가 남아있으면 author 수정불가
-CREATE TABLE posts(id INT PRIMARY KEY, title VARCHAR(255), conntent VARCHAR(255), author_id INT, FOREIGN KEY(author_id) REFERENCES author(id));
+CREATE TABLE posts(id INT PRIMARY KEY, title VARCHAR(255) not null, conntent VARCHAR(255), author_id INT, FOREIGN KEY(author_id) REFERENCES author(id));
 
 
 -- 테이블 컬럼 정보조회
