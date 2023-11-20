@@ -9,13 +9,13 @@ INSERT  INTO author(id, name, email, password, role) values(6, 'yoon', 'nop@nave
 
 -- post 데이터 5개 추가
 -- 2개는 저자가 있는 데이터
-INSERT  INTO post(id, title, contents, auhtor_id) values(1, 'hello', 'hello world', 1);
-INSERT  INTO post(id, title, contents, auhtor_id) values(2, 'hello2', 'hello world2',2);
+INSERT  INTO post(id, title, contents, author_id) values(1, 'hello', 'hello world', 1);
+INSERT  INTO post(id, title, contents, author_id) values(2, 'hello2', 'hello world2',2);
 -- 2개는 저자가 비어있는 데이터 -> author_id
 INSERT  INTO post(id, title, contents) values(3, 'hello3', 'hello world3');
 INSERT  INTO post(id, title, contents) values(4, 'hello4', 'hello world4');
 -- 1개는 저자가 author테이블에 없는 데이터 추가 -> 에러발생 확인하기
-INSERT  INTO post(id, title, contents, auhtor_id) values(5, 'hello2', 'hello world2',10);
+INSERT  INTO post(id, title, contents, author_id) values(5, 'hello2', 'hello world2',10);
 
 
 
@@ -39,7 +39,7 @@ delete from author where id=1;
 -- 방법2
 delete from author where id=1;
 -- 오류
-UPDATE post set author_id = null where auhtor_id=2;
+UPDATE post set author_id = null where author_id=2;
 -- 조치
 delete from author where id=1;
 -- 해결
@@ -71,3 +71,53 @@ SHOW INDEX FROM author;
 ALTER TABLE author DROP index email;
 -- 테이블 제약조건 추가 형식으로 추가
 ALTER TABLE author ADD CONSTRAINT author_unique unique(email);
+
+-- 제약조건 - on update cascade
+-- 외래키 제약조건에서 ON UPDATE CASCADE등의 옵션
+-- POST 테이블에 ON UPDATE CASCADE 설정
+-- 먼저 기존의 foreign key 제약조건을 조회 후 삭제
+select * from INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME ='post';
+ALTER TABLE post DROP FOREIGN KEY post_ibfk_1;
+SHOW INDEX from post;
+ALTER TABLE post DROP INDEX author_id;
+
+-- 새롭게 제약조건 추가
+ALTER TABLE post ADD CONSTRAINT post_author_fk FOREIGN KEY (author_id) REFERENCES author(id) ON UPDATE CASCADE;
+
+-- 테스트
+-- 삭제
+-- 삭제불가
+-- restrict와 동일 
+-- 수정
+-- author 테이블의 id 수정시 post 테이블의 id도 같이 수정
+
+-- 제약조건 - ON DELETE CASCADE 실습
+
+
+
+-- ON DELETE SET NULL, ON UPDATE SET NULL 또한 동일 방법으로 테스트
+ALTER TABLE post ADD CONSTRAINT post_author_fk FOREIGN KEY (author_id) REFERENCES author(id) ON DELETE SET NULL ON UPDATE SET NULL;
+
+-- 흐름제어 실습
+
+-- POST 테이블에 id, title, contents 그리고 author_id의 경우 author_type이라는 이름으로 조회 author_id가 만약
+-- 1이면 first_author, 2이면 second_author로 조회가 되도록 하고 3이상 그외의 경우 etc_author로 조회되도록 하여라
+-- 1. case when 사용
+select id, title, contents,
+CASE  
+    WHEN author_id = 1 THEN 'First_author'
+    WHEN author_id = 2 THEN 'second_author'
+    when author_id is null then 'Anonymous'
+else 'Others'
+end
+as author_type from post;
+
+-- 2. if문 사용하여 동일하게 출력
+select id, title, contents,
+if(author_id=1, 'First_author', 'Others')
+as author_type from post;
+
+-- 3. 위에서 사용한 ifnull의 결과 값을 동일하게 if문으로 출력하도록
+select id, title, contents, ifnull(author_id, 'anonymous') from post;
+select id, title, contents, if( author_id is null , 'Anonymous', author_id) from post;
+

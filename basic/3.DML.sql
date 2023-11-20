@@ -115,8 +115,8 @@ SELECT DATE_FORMAT('2020-01-01 17:12:00', '%Y-%m-%d'); =>2020-01-01
 SELECT * FROM post where DATE_FORMAT (created_time, '%Y-%m-%d') = '20202-01-03';
 
 -- 제약조건 - UNIQUE
--- UNIQE 제약 조건을 별도로 정의하며, 선택적으로 제약 조전에 이름을 부여하는 방법
-CREATE TABLE 테이블이름 (필드이름 필드 타입,..., [CONSTRAINT 제야조건이름] UNIQE(필드이름));
+-- UNIQUE 제약 조건을 별도로 정의하며, 선택적으로 제약 조전에 이름을 부여하는 방법
+CREATE TABLE 테이블이름 (필드이름 필드 타입,..., [CONSTRAINT 제야조건이름] UNIQUE(필드이름));
 -- UNIQUE 제약 조건을 설정하면, 해당 필드는 자동으로 인데스(INDEX)로 설정, 제약조건 삭제시 index 삭제, index 삭제시 제약조건 삭제
 SHOW INDEX FROM 테이블명;
 index 삭제 : ALTER TABLE 테이블이름 DROP INDEX 인덱스명;
@@ -130,3 +130,55 @@ ALTER TABLE 테이블이름 ADD CONSTRAINT 제약조건이름 unique
 -- 제약조건 목록 조회
 ALTER TABLE 테이블명 DROP CONSTRAINT email;
 ALTER TABLE 테이블명 DROP FOREIGN KEY UNIQUE 제약조건이름;
+
+-- 제약조건 - primary key
+
+-- primary key 제약조건을 가진 컬럼을 기본키(pk)라함
+-- NOT NULL과 UNIQUE 제약 조건의 특징을 모두가진다
+-- PRIMARY KEY는 테이블다 오직하나의 필드에만 설정
+-- UNIQUE는 한테이블의 여러 필드에 설정 가능
+-- NOT NULL도 물론 여러필드 설정 가능
+
+-- 제약조건 - FOREIGN KEY
+
+-- 외래키라고 부르며, 한 테이블을 다른 테이블과 연결해주는 역할
+-- 하나의 테이블을 다른 테이블에 의존하게 만드는것
+-- 다른 테이블의 필드는 반드시 UNIQUE나 PRIMARY KEY 제약조건이어야함
+-- 문법
+CREATE TABLE(필드이름 필드타입,..., [CONSTRAINT 제약조건이름] FOREIGN KEY)
+
+-- 참조되는 테이블에서 데이터의 수정이나 삭제가 발생시 영향
+-- ON DELETE
+-- ON UPDATE
+-- 기본값은 delete, update 모두 restrict 옵션이 걸려 있으므로, 변경하고 싶다면 각각 지정 필요
+
+-- 위 설정시 동작옵션
+-- CASCADE 참조되는 테이블에서 데이터를 삭제/ 수정하면 같이 삭제/수정
+-- SET NULL 참조되는 테이블에서 데이터를 삭제/수정하면 데이터는 NULL로 변결
+-- RESTRICT fk로 잡은 테이블의 데이터가 남아 있으면, fk 대상 데이터를 
+
+-- 제약조건 - default
+-- 데이터를 입력할 때 해당 필드 값을 전달하지 않으면, 자동으로 설정된 기본값을 정장
+-- 문법 
+create table test1( ID INT, NAME VARCHAR(30) DEFAULT 'Anoymous');
+
+-- 시간 세팅시 가장 많이 사용
+-- ALTER TABLE author ADD create_at DATETIME DEFAULT;
+
+-- 흐름제어
+-- CASE -switch
+-- CASE와 END로 이루어져있고, 원하는 조건내에 존재하지 않으면 ELSE문을 타고, ELSE문이 없을 경우 null을 return
+CASE value 
+WHEN [compare_value] THEN result 
+WHEN [compare_value] THEN result ....
+ELSE result
+END
+
+-- if
+-- if(a,b,c) a-조건, b-참일경우 반환값, c는 거짓일 경우 반환값
+-- 만약 a 조건이 참이면 b를 반환하고, 거짓이면 c를 반환합니다.
+SELECT IF(0<1, 'yes', 'no');
+
+-- IFNULL(a,b)
+-- 만약 a 값이 NULL이 아니면 a 그 자체를 반환하고, NULL이며 b를 반환
+select id, title, contents, ifnull(author_id, 'anonymous') from post;
