@@ -47,7 +47,7 @@ select distinct name from author;
 
 -- 선택한 결과의 정렬
 -- SELETE문으로 선택한 결과를 ORDER BY 절을 사용하여 정렬
--- 기본 설정은 오름차순(ASC)이며, 내림차순시 DESC
+-- 기본 설정은 s오름차순(ASC)이며, 내림차순시 DESC
 -- 여러 필드의 데이터를 쉼표(,)를 사용하여 여러기준으로 정렬
 -- order by를 생략시 pk를 기준으로 오름차순 정렬한 값 변환
 
@@ -112,3 +112,21 @@ SELECT * FROM author WHERE name REGEXP '[가-힣]';
 SELECT CAST(20200101 AS DATE); => 2020-01-01
 SELECT CONVERT('2020-01-01', DATE); =>2020-01-01
 SELECT DATE_FORMAT('2020-01-01 17:12:00', '%Y-%m-%d'); =>2020-01-01
+SELECT * FROM post where DATE_FORMAT (created_time, '%Y-%m-%d') = '20202-01-03';
+
+-- 제약조건 - UNIQUE
+-- UNIQE 제약 조건을 별도로 정의하며, 선택적으로 제약 조전에 이름을 부여하는 방법
+CREATE TABLE 테이블이름 (필드이름 필드 타입,..., [CONSTRAINT 제야조건이름] UNIQE(필드이름));
+-- UNIQUE 제약 조건을 설정하면, 해당 필드는 자동으로 인데스(INDEX)로 설정, 제약조건 삭제시 index 삭제, index 삭제시 제약조건 삭제
+SHOW INDEX FROM 테이블명;
+index 삭제 : ALTER TABLE 테이블이름 DROP INDEX 인덱스명;
+
+-- UNIQUE ALTER문
+-- 방법1 
+ALTER TABLE 테이블이름 MODIFY COLUMN 필드이름 필드타입 UNIQUE
+-- 방법2 별도의 제야조건이름 옵션
+ALTER TABLE 테이블이름 ADD CONSTRAINT 제약조건이름 unique
+-- 제약조건 제거
+-- 제약조건 목록 조회
+ALTER TABLE 테이블명 DROP CONSTRAINT email;
+ALTER TABLE 테이블명 DROP FOREIGN KEY UNIQUE 제약조건이름;

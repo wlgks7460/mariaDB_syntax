@@ -43,3 +43,31 @@ UPDATE post set author_id = null where auhtor_id=2;
 -- 조치
 delete from author where id=1;
 -- 해결
+
+-- date_format, like, between,비교연산자를 활용하여 2023년에 생성된 데이터 비교하는 실습
+select * from post where date_format(created_time, '%Y') ='2023'; 
+select * from post where created_time like '2023%';
+select * from post where created_time between '2023-01-01%' and '2023-12-31%';
+-- now()를 활용하여 오늘 날짜에 출력된 데이터 값 출력
+select * from post where date_format(created_time, '%Y-%m-%d') = date_format(now(), '%Y-%m-%d');
+
+-- AUTO_INCREMENT 키워드와 함께 새로운 데이터가 추가될 떄마다1씩 증가시키고
+-- post 테이블에 id 없이 insert, 
+-- insert한 데이터 삭제
+-- 다시 데이터 insert
+ALTER table post MODIFY column id INT AUTO_INCREMENT;
+INSERT INTO post(title, contents) values('v4', 't1win');
+delete from post where id=11;
+INSERT INTO post(title, contents) values('v5', 't1win');
+
+-- 제약조건 UNIQUE 실습
+
+-- author 테이블에 email에 unique 제약조건 추가 (제약조건 생성하면 index 생성)
+-- 컬럼 제약조건으로 추가
+-- 제약조건 제거 및 index 제거
+ALTER TABLE author MODIFY COLUMN email varchar(255) UNIQUE;
+SELECT * FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME = 'author';
+SHOW INDEX FROM author;
+ALTER TABLE author DROP index email;
+-- 테이블 제약조건 추가 형식으로 추가
+ALTER TABLE author ADD CONSTRAINT author_unique unique(email);
