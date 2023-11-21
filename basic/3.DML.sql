@@ -108,7 +108,7 @@ select * from author where name LIKE '%길%';
 SELECT * FROM author WHERE name REGEXP '[a-z]';
 SELECT * FROM author WHERE name REGEXP '[가-힣]';
 
--- 타입변환
+-- 타입변환 (CAST 값 AS 데이터형식)
 SELECT CAST(20200101 AS DATE); => 2020-01-01
 SELECT CONVERT('2020-01-01', DATE); =>2020-01-01
 SELECT DATE_FORMAT('2020-01-01 17:12:00', '%Y-%m-%d'); =>2020-01-01
