@@ -121,3 +121,74 @@ as author_type from post;
 select id, title, contents, ifnull(author_id, 'anonymous') from post;
 select id, title, contents, if( author_id is null , 'Anonymous', author_id) from post;
 
+-- INNER JOIN 실습
+SELECT a.*, p.* FROM tableA INNER JOIN tableB ON tableA.ID = tableB.A_ID;
+SELECT * FROM tableA AS a INNER JOIN tableB AS b on a.ID = b.a_id;
+
+SELECT * FROM author INNER JOIN post ON author.id = post.author_id;
+SELECT * FROM author AS a INNER JOIN post AS p on a.id = p.author_id;
+
+-- 예제
+-- post 테이블에는 author_id, 글쓴이명, 글제목
+
+-- left (outer) JOIN 실습
+-- author의 테이블은 일단 다 조회하고 author가 작성한 글정보를 JOIN 추가적으로 조회
+SELECT * FROM tableA a LEFT JOIN tableB b ON a.id = b.a_id;
+
+
+
+-- 실습
+
+-- author 테이블과 post 테이블을 JOIN하여, 글을 작성한 모든 저자의 이름(name)과 해당 글의 제목(title)을 조회하시오.
+-- author 는 alias a, post alias p
+
+select a.name, p.title from author AS a INNER JOIN post AS p on a.id = p.author_id;
+
+-- author 테이블을 기준으로 post 테이블과 join하여, 모든 저자의 이름과 해당저자가 작성한 글의 제목을 조회하시오.
+-- 글을 작성하지 않은 저자의 경우, 글제목은 NULL로 표시
+select a.name, p.title from author a left join post p on a.id = p.author_id;
+
+-- 위의 예제와 동일하게 모든 저자의 이름과 해당 저자가 작성한 글의 제목을조회. 단, 저자의 나이가 25세 이상인 저자만 조회
+SELECT a.name, p.title from author a left join post p on a.id = p.author_id where a.age >= 25;
+
+-- not null 이 아닌 경우 둘이 같음
+select * from author INNER join post;
+select a.*, p* from post left join author;
+
+-- UNION 실습
+A테이블의 조회 결과 UNION
+SELECT 컬럼1, 컬럼2 FROM TABLE1 UNION SELECT 컬럼1, 컬럼2 FROM TABLE2;
+-- AUTHOR 테이블에서 NAME, EMAIL POST 테이블 TITLE, CONTENTS UNION UNION ALL
+
+SELECT name, email from author union all select title, contents from post;
+
+-- post의 price에 적적한 값을 넣어놓고 avg(정수값), min, max, sum
+-- 소수점 -> round(대상값, 원하는소숫점자릿수)
+select count(*) from author;
+select round(avg(price),0) from post;
+select min(price) from post;
+select max(price) from post;
+select sum(price) from post;
+
+-- group by
+-- author_id별 count 값
+-- author_id별 price sum, avg
+select author_id from post group by author_id;
+select author_id, count(*) from post group by author_id;
+select author_id, avg(price) from post group by author_id;
+
+-- 1)author_id 별로 price 평균값을 구하시오 단 건별로 4000원 이상인 데이터만 평균을 내서 출력하시오
+select author_id, avg(price) from post where price >= 4000 group by author_id;
+-- 2)author_id 별로 price 평균값을 구하되 평균값이 4000원 이상건만 출력하시오.
+select author_id, avg(price) from post group by author_id having avg(price) >= 4000;
+select author_id, avg(price) as price from post group by author_id having price > 4000;
+-- 3) 1+2
+select author_id, avg(price) as price from post where price >= 4000 group by author_id having price > 4000;
+
+-- 재귀문
+WITH RECURSIVE number_sequence(HOUR) AS (
+    SELECT 0
+    UNION ALL
+    SELECT HOUR +1 FROM number_sequence WHERE HOUR < 23
+)
+select HOUR, 0 as COUNT from number_sequence;
