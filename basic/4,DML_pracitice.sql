@@ -289,18 +289,21 @@ END while;
 END
 // DELIMITER ;
 
--- db dump 실습
--- db의 sql 파일화
-mysqldump -u root -p --default-character-set=utf8mb4 board > dumpfile.sql
 -- db 다시 생성
 mysql -u root -p board < dumpfile.sql;
 
 -- 윈도우
--- 구축된 database를 sql파일화하고 전체DB 다시생서
--- 쿼리문 생성후 DB삭제 및 쿼리문 재 실행
+-- db dump 실습
+-- 구축된 database를 sql파일화하고 전체DB 다시생성
+mysqldump -u root -p --default-character-set=utf8mb4 board > dumpfile.sql
 -- github에 dump 파일 업로드
 
 -- 리눅스 linux에 db 구축 (mariaDB 설치 및 데이터베이스 생성)
+-- 리눅스에 mariadb 설치
+sudo apt install mariadb-server -y 
+-- 설치 확인
+sudo mariadb -v
 -- github에서 소스코드 clone
+git clone https://github.com/wlgks7460/mariaDB_syntax.git
 -- 해당 폴더로 이동하여 덤프 복원 명령어 실행
-mysql -u root -p board < dumpfile.sql;
+sudo mysql -u root -p board < dumpfile.sql;
