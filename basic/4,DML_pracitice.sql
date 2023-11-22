@@ -192,3 +192,115 @@ WITH RECURSIVE number_sequence(HOUR) AS (
     SELECT HOUR +1 FROM number_sequence WHERE HOUR < 23
 )
 select HOUR, 0 as COUNT from number_sequence;
+
+-- index 실습
+-- 1) author name으로 단일 컬럼 index
+CREATE INDEX index_name ON author(name);
+-- 2) 복합컬럼 index : author의 name, email index (정렬한 순서대로 우선순위 부여)
+CREATE INDEX index_name ON 테이블명(컬럼1, 컬럼2);
+
+
+-- 사용자 관리
+-- 사용자 목록 조회
+select * from  mysql.user;
+-- 권한 조회
+show grants for 'testuser'@'localhost';
+-- user 생성
+CREATE USER 'testuser'@'localhost' IDENTIFIED BY '1234';
+-- insert 권한 부여 및 삭제
+GRANT insert ON board.author TO 'testuser'@'localhost';
+revoke insert ON board.author from 'testuser'@'localhost';
+-- user 삭제
+drop user 'testuser'@'localhost';
+
+-- view 만들고 조회하기
+CREATE VIEW author_for_view AS SELECT name, email from author;
+select * from author_for_view; 
+
+-- 저장 프로시저 기본 문법
+-- 프로시저 생성
+-- 프로시저네임 : getUser(IN userId INT)
+DELIMITER // CREATE PROCEDURE procedure_name (parameters) begin SQL 문법 END // DELIMITER;
+
+-- 프로시저 호출시 
+CALL 프로시저명();
+
+-- 생성된 프로시저 확인
+SHOW CREATE PROCEDURE 프로시저명;
+
+-- 파라미터는 생략가능하고, 함수와 같이 parameter를 전달하여 실행하는 것도 가능
+기본형식은 (IN 변수명 변수타입)
+-- 프로시저 실습
+-- post 테이블에 쉽게 insert할 수 있는 post 관련 프로시저 생성
+-- 사용자에게 title, contents, author_id 만 입력받아 insert하는 insert문 생성
+DELIMITER // 
+CREATE PROCEDURE easy_user (in title varchar(255), contents varchar(3000), author_id int(11)) 
+begin 
+INSERT INTO post(title, contents, author_id) values (title, contents, author_id)  
+END 
+// DELIMITER;
+
+
+-- 변수 선언
+DECLARE 변수명 변수타입 [DEFAULT default_value];
+-- 반드시 프로시저나 함수의 본문 시작 부분, 즉 BEGIN 바로 밑에 위치
+-- 변수 수정
+SET 변수명 = 수정할 값;
+-- 제어문 
+-- if 문
+if 조건식 then 
+조건이 참일때 실행할 명령
+ELSE
+조건이 거짓일 때 실행할 명령
+END IF;
+"SELECT 컬럼명 INTO 변수"문과 함께 많이 사용
+
+-- PROCEDURE IF문 예제
+DELIMITER // 
+CREATE PROCEDURE pay_user (in a_id int(11)) 
+begin 
+DECLARE avg_pay int default 0 ;
+select avg(price) into avg_pay from post where author_id = a_id ;
+
+if avg_pay >= '4000' then
+select "고액 원고료 작가입니다." as pay;
+else
+select " 고액 원고료 작가가 아닙니다." as pay;
+end if;
+END 
+// DELIMITER ;
+
+
+-- while문 
+while 조건식 DO
+조건이 참일 동안 반복 실행할 명령
+END WHILE;
+
+-- PROCEDURE while문 예제 테이블에 while문을 활용하여 데이터 대량 insert 100건
+
+DELIMITER // 
+CREATE PROCEDURE create_post()
+begin
+DECLARE a int DEFAULT 0 ;
+WHILE a < 10 DO
+    SET a = a+1;
+    insert into post(contents) values(concat('hellos world',i));
+END while;
+END
+// DELIMITER ;
+
+-- db dump 실습
+-- db의 sql 파일화
+mysqldump -u root -p --default-character-set=utf8mb4 board > dumpfile.sql
+-- db 다시 생성
+mysql -u root -p board < dumpfile.sql;
+
+-- 윈도우
+-- 구축된 database를 sql파일화하고 전체DB 다시생서
+-- 쿼리문 생성후 DB삭제 및 쿼리문 재 실행
+-- github에 dump 파일 업로드
+
+-- 리눅스 linux에 db 구축 (mariaDB 설치 및 데이터베이스 생성)
+-- github에서 소스코드 clone
+-- 해당 폴더로 이동하여 덤프 복원 명령어 실행
+mysql -u root -p board < dumpfile.sql;
